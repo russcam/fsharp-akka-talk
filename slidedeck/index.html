@@ -1,0 +1,1127 @@
+﻿<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Akka with F# - Getting functional with Reactive systems</title>
+    <meta name="description" content="Akka with F#">
+    <meta name="author" content="Russ Cam">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+    <!--<link rel="stylesheet" href="css/bootstrap.css" />-->
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/akka.css" id="theme">
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <style type="text/css">
+        .reveal .footer {
+            position: absolute;
+            bottom: 1em;
+            left: 1em;
+            font-size: 0.5em;
+        }
+
+        .pull-left {
+            float: left;
+        }
+
+        .pull-right {
+            float: right;
+        }
+
+        .reveal section img {
+            background: none;
+            border: none;
+            -webkit-box-shadow: none;
+            -ms-box-shadow: none;
+            box-shadow: none;
+        }
+
+        .reveal a.no-link {
+            color: inherit !important;
+            text-decoration: none;
+            -webkit-transition: color 0.15s ease;
+            -moz-transition: color 0.15s ease;
+            transition: color 0.15s ease;
+        }
+
+            .reveal a.no-link:hover {
+                color: #8dcffc;
+                text-shadow: none;
+                border: none;
+            }
+    </style>
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+
+    <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+    <div class="reveal">
+
+        <div class='footer'>
+            <span>Akka.NET with F# - <a href="http://twitter.com/forloop">@forloop</a></span>
+        </div>
+
+        <div class="slides">
+
+            <section id="intro">
+                <h1>Akka.NET with F#</h1>
+                <p>Getting <em>fun</em>ctional with Reactive systems</p>
+                <p>
+                    <small>Russ Cam</small>
+                    <small><a href="http://twitter.com/forloop">@forloop</a></small>
+                </p>
+            </section>
+
+            <section id="about">
+                <section id="me">
+                    <h2>About me</h2>
+                    <img src="images/about-me.jpg" class="pull-left" style="height: 38%; width: 38%;" />
+                    <ul class="pull-right">
+                        <li>Independent Software Engineer</li>
+                        <li>
+                            Interested in
+                            <ul>
+                                <li>Distributed systems</li>
+                                <li>Cloud computing</li>
+                                <li>Message-driven architectures</li>
+                                <li>
+                                    Software Design,
+                                    <br />
+                                    Patterns and Practices
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            Holla!
+                            <ul>
+                                <li><a href="http://twitter.com/forloop">@forloop</a></li>
+                                <li><a href="http://forloop.co.uk/blog">forloop.co.uk/blog</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+
+                <section id="first-computer">
+                    <h2>My First Computer</h2>
+                    <p>The Acorn Electron</p>
+                    <img src="images/acorn-electron.png" alt="http://computarium.lcd.lu/news.html" />
+
+                    <aside class="notes">
+                        <ul>
+                            <li><em>Budget</em> BBC Micro</li>
+                            <li>Released in 1983 <em>(31 years ago)</em></li>
+                            <li>Audio cassette tapes!</li>
+                            <li>32 kB RAM</li>
+                        </ul>
+                    </aside>
+                </section>
+
+                <section id="classic-games">
+                    <h2>Classic titles</h2>
+                    <img src="images/magic-mushrooms.gif" alt="http://classicgaminguk.blogspot.com.au/2011/10/classic-game-review-magic-mushrooms.html" />
+
+                    <aside class="notes">
+                        Arguably the Grand Theft Auto of its generation, albeit with a hippy twist.
+                    </aside>
+                </section>
+            </section>
+
+            <section id="the-future">
+                <section id="welcome">
+                    <h2>WELCOME TO THE FUTURE!</h2>
+                    <img src="images/future.jpg"/>
+                </section>
+
+                <section id="agent-based-programming">
+                    <h2>Agent-based Programming</h2>
+                    <p>a.k.a. <a href="https://en.wikipedia.org/?title=Actor_model">The Actor model</a></p>
+
+                    <blockquote cite="https://en.wikipedia.org/?title=Actor_model">
+                        <p>
+                            ...is a <em>mathematical</em> model of concurrent computation that treats
+                            <strong>"actors" as the universal primitives of concurrent computation</strong>:
+                            in response to a message that it receives, an actor can make local decisions,
+                            create more actors, send more messages, and determine how to respond to the next message received.
+                        </p>
+                    </blockquote>
+                    <p class="fragment"><em>First proposed in 1973!</em></p>
+                    <aside class="notes">
+                        <ul>
+                            <li>Actor architectures are not a new idea</li>
+                            <li>1973 - Carl Hewitt, Peter Bishop and Richard Steiger</li>
+                            <li>paper "A universal modular ACTOR formalism for artificial intelligence"</li>
+                        </ul>
+                    </aside>
+                </section>
+
+                <section id="sequential-flow">
+                    <h2>Sequential flow</h2>
+                    <img src="images/sequential-flow.svg" />
+
+                    <aside class="notes">
+                        <ul>
+                            <li>Single control flow</li>
+                            <li>One entry point</li>
+                            <li>Other components called</li>
+                            <li>Control proceeds until result is returned</li>
+                        </ul>
+                    </aside>
+                </section>
+
+                <section id="parallel-flow">
+                    <h2>Parallel flow</h2>
+                    <img src="images/parallel-flow.svg" />
+
+                    <aside class="notes">
+                        <ul>
+                            <li>
+                                Work that can be split up is done so using multiple threads/tasks
+                                to perform it in parallel
+                            </li>
+                            <li>Improved throughput over sequential model</li>
+                            <li>Coordination model not indifferent from sequential</li>
+                            <li>Work can be concurrent, but proceeds until result is returned</li>
+                        </ul>
+                    </aside>
+                </section>
+
+                <section id="actor-flow">
+                    <h2>Agent-based (Actor) flow</h2>
+                    <img src="images/agent-based-flow.svg" />
+                    <aside class="notes">
+                        <ul>
+                            <li>Communication through asynchronous message passing</li>
+                            <li>Non-blocking</li>
+                            <li>Reactive system - may be less well defined entry and exit points</li>
+                        </ul>
+                    </aside>
+                </section>
+
+                <section id="ericsson">
+                    <h2>Ericsson AXD 301</h2>
+                    <img src="images/ericsson-301-AXD.png"/>
+                    <ul>
+                        <li class="fragment">Erlang</li>
+                        <li class="fragment">99.9999999% uptime - "9 Nines"
+                        <li class="fragment">over 20 years!</li>
+                        <li class="fragment">~0.631 secs downtime per year</li>
+                    </ul>
+                    <aside class="notes">
+                        <ul>
+                            <li>well known example of an Actor architecture is the Ericsson AXD 301</li>
+                            <li>Asynchronous Transfer Mode (ATM) switching system to unify telecommunication and computer networks</li>
+                            <li>ERLANG</li>
+                            <li>9 nines = service uptime, NOT uptime of computers running the system</li>
+                        </ul>
+                    </aside>
+                </section>
+
+                <section id="mind-blown" data-background="images/mind-blown.gif"></section>
+            </section>
+
+            <section id="akka-welcome">
+
+                <section id="what-is-akka">
+                    <h2>akka.net</h2>
+                    <img src="images/AkkaNetLogoDesign.svg" />
+                    <ul>
+                        <li>Port of the <a href="http://akka.io/">JVM Akka Toolkit</a> to the .NET Framework</li>
+                        <li>Heavily influenced by the Actor model implementation in Erlang</li>
+                    </ul>
+
+                    <aside class="notes">
+                        <ul>
+                            <li>Licensed under Apache 2</li>
+                            <li>Let it crash philosophy</li>
+                            <li>Named after Swedish mountain in region of Laponia.</li>
+                        </ul>
+                    </aside>
+                </section>
+
+                <section id="whos-using-akka">
+                    <h2>Who's using akka?</h2>
+                    <img src="images/whosusingAkka.png" />
+
+                    <aside class="notes">
+                        <ol>
+                            <li>Investment and Merchant Banking</li>
+                            <li>Retail</li>
+                            <li>Social Media</li>
+                            <li>Simulation</li>
+                            <li>Gaming and Betting</li>
+                            <li>Automobile and Traffic Systems</li>
+                            <li>Data Analytics</li>
+                        </ol>
+                    </aside>
+                </section>
+            </section>
+
+            <section id="reactive-manifesto">
+                    <h2>
+                        <a class="no-link" href="http://www.reactivemanifesto.org/">Reactive Manifesto</a>
+                    </h2>
+                    <img src="images/responsive-manifesto.svg" />
+                    <p>
+                        <small>
+                            <a href="https://www.typesafe.com/blog/why_do_we_need_a_reactive_manifesto%3F">Why do we need a Reactive Manifesto?</a>
+                        </small>
+                    </p>
+
+                    <aside class="notes">
+                        <ul>
+                            <li>Akka adheres to the Reactive Manifesto</li>
+                            <li>The requirements for applications today have changed</li>
+                            <li>Users expect millsecond response times</li>
+                            <li>The system may be distributed over multiple cores and machines</li>
+                        </ul>
+
+                        <h3>Message Passing</h3>
+                        <ul>
+                            <li>Asynchronous message passing to establish a boundary between components</li>
+                            <li>Loose Coupling</li>
+                            <li>Isolation</li>
+                            <li>Location Transparency</li>
+                            <li>Delegate Errors as messages</li>
+                        </ul>
+
+                        <h3>Resilient</h3>
+                        <ul>
+                            <li>Stay Responsive in face of failure</li>
+                            <li>Contain failures to specific portions of system</li>
+                        </ul>
+
+                        <h3>Elastic</h3>
+                        <ul>
+                            <li>React to the workload exerted on the system</li>
+                            <li>Scalable up and out</li>
+                        </ul>
+
+                        <h3>Responsive</h3>
+                        <ul>
+                            <li>Respond in timely manner, if at all possible</li>
+                            <li>Builds user confidence in the system</li>
+                        </ul>
+                    </aside>
+            </section>
+
+            <section id="actors-everywhere">
+                <img src="images/actorsactorseverywhere.jpg" style="width: 70%; height: 70%;" />
+            </section>
+
+            <section id="anatomy-of-an-actor">
+                <h2>Anatomy of an actor</h2>
+                <section>
+                    <img src="images/actor.svg" />
+                    <aside class="notes">
+                        <p>Objects that encapsulate state and behaviour, communicating exclusively through message passing</p>
+                        <p>Can do 4 things</p>
+                        <ul>
+                            <li>Receive and respond to incoming messages</li>
+                            <li>Send messages to other actors</li>
+                            <li>Create new actors</li>
+                            <li>Change behaviour in response to an incoming message</li>
+                        </ul>
+
+                        <p>In Akka, pretty much everything is an actor</p>
+                        <ul>
+                            <li>Loggers</li>
+                            <li>Routing</li>
+                            <li>Persistence</li>
+                            <li>Eventbus</li>
+                            <li>Default Lifecycle monitoring</li>
+                        </ul>
+                    </aside>
+                </section>
+
+                <section id="actor-cycle">
+                    <img src="images/actor-flow.svg" />
+                </section>
+            </section>
+
+        <section id="who-creates-the-first-actor">
+            <h2>Who creates the first Actor?</h2>
+        </section>
+
+
+        <section id="actor-system">
+                <h2>Actor System</h2>
+
+                <section>
+                    <img src="images/actorsystem.svg" />
+
+                    <aside class="notes">
+                        <ul>
+                            <li>Create top level actors</li>
+                            <li>Heavyweight structure, so create one per logical applicaytion</li>
+                            <li>Use System.create as it sets up serialization support for Remote Deployment</li>
+
+                            <li>EXAMPLE 0_ActorSystem.fsx</li>
+                        </ul>
+
+                        <ul>
+                            <li>Error Kernel Pattern</li>
+                            <li>
+                                Fault Tolerance by pushing the most error prone operations
+                                to the edges of the actor hierarchy
+                            </li>
+                        </ul>
+                    </aside>
+                </section>
+
+                <section>
+                    <img src="images/actorsystem-useractors.svg" />
+                </section>
+            </section>
+
+            <section id="creating-actors">
+                <h2>Creating Actors</h2>
+
+                <section>
+                    <h3>types</h3>
+                    <pre><code class="fsharp" data-trim>
+type EchoActor() =
+    inherit UntypedActor()
+        override this.OnReceive (msg:obj) = 
+            printfn "Received message %A" msg               
+                        
+let system = System.create "system" &lt;| Configuration.defaultConfig()
+                        
+// Use Props() to create actor from type definition
+let echoActor = system.ActorOf(Props(typedefof&lt;EchoActor&gt;), "echo")
+
+// tell a message
+echoActor &lt;! "Hello World!" 
+                        </code></pre>
+                    <p class="fragment">How very C# like!</p>
+                </section>
+
+                <section>
+                    <h3>Let's get <em>fun</em>ctional</h3>
+                </section>
+
+                <section>
+                    <h3>actorOf</h3>
+                    <p>Receives next message from mailbox</p>
+                    <pre><code class="fsharp" data-trim>
+let echo (msg:obj) =
+    printfn "Received message %A" msg
+                            
+let system = System.create "system" &lt;| Configuration.defaultConfig()
+                        
+// use spawn in conjunction with actorOf.
+// Wraps provided function to give actor behaviour
+let echoActor = spawn system "echo" (actorOf echo)
+                        
+// tell a message
+echoActor &lt;! "Hello World!"</code></pre>
+                </section>
+
+                <section>
+                    <h3>actorOf2</h3>
+                    <p>Receives "self" actor and next message from mailbox</p>
+                    <pre><code class="fsharp" data-trim>
+let echo (mailbox:Actor&lt;'a&gt;) msg =
+    printfn "Received message %A" msg
+                            
+let system = System.create "system" &lt;| Configuration.defaultConfig()
+                        
+// use spawn in conjunction with actorOf2.
+// Wraps provided function to give actor behaviour
+let echoActor = spawn system "echo" (actorOf2 echo)
+                        
+// tell a message
+echoActor &lt;! "Hello World!"</code></pre>
+                </section>
+
+                <section>
+                    <h3>actor computation expression</h3>
+                    <p>Receives "self" actor and returns a <em>Continuation</em></p>
+                    <pre><code class="fsharp" data-trim>
+let echo (mailbox:Actor&lt;'a&gt;) =
+    let rec loop () = actor {
+        let! msg = mailbox.Receive ()
+        printfn "Received message %A" msg
+        return! loop ()
+    }
+    loop ()
+                            
+let system = System.create "system" &lt;| Configuration.defaultConfig()
+                        
+// use spawn in conjunction with actor computation expression
+let echoActor = spawn system "echo" echo
+                        
+// tell a message
+echoActor &lt;! "Hello World!"</code></pre>
+                    
+                    <aside class="notes">
+                        <ul>
+                            <li>self-invoking recursive function</li>
+                            <li>
+                                type Cont&lt;'In, 'Out&gt; =
+                                | Func of ('In -> Cont&lt;'In, 'Out&gt;)
+                                | Return of 'Out
+                            </li>
+                        </ul>
+                    </aside>
+
+                </section>
+
+                <aside class="notes">
+                    <ul>
+                        <li>ActorType</li>
+                        <li>ActorOf</li>
+                        <li>ActorOf2</li>
+                        <li>Props</li>
+
+                        <li>EXAMPLE 1_ActorType.fsx</li>
+                        <li>EXAMPLE 2_ActorOf.fsx</li>
+                        <li>EXAMPLE 2_ActorOf2.fsx</li>
+                        <li>EXAMPLE 3_ActorComputationExpression.fsx</li>
+                    </ul>
+                </aside>
+            </section>
+
+        <section>
+            <h2>I can create actors, now what?</h2>
+        </section>
+
+        <section id="message-passing">
+            <h2>Message passing</h2>
+
+                <section>
+                    <h3>ActorRef</h3>
+
+                    <pre><code class="fsharp" data-trim>            
+// ActorRef
+let echoActorRef = spawn system "echo" 
+                       (actorOf (fun m -> printfn "received %A" m))
+                        
+// tell a message to actor ref
+echoActorRef &lt;! "Hello World!"
+</code></pre>
+                    
+                    <aside class="notes">
+                        <ul>
+                            <li>ActorSystem actually returns an ActorRef to the actor</li>
+                            <li>ActorRef is essentially an address to a particular actor</li>
+                            <li>Location transparency</li>
+                        </ul>
+                    </aside>
+                </section>
+
+
+
+                <section>
+                    <h3>ActorSelection</h3>
+
+                    <pre><code class="fsharp" data-trim>                  
+// ActorSelection, using wildcard actor path
+let echoActorSelection = select "/user/echo*" system
+                        
+// tell a message to actor selection
+echoActorSelection &lt;! "Hello World!"
+</code></pre>
+
+
+                    <aside class="notes">
+                        <ul>
+                            <li>Location Transparency</li>
+                            <li>ActorSelection could be more than one ActorRef</li>
+                            <li>Prefer ActorRef where possible. Object to communicate with an actor.</li>
+                            <li>ActorRef can be passed around in messages, etc.</li>
+
+                            <li>ActorRef examples: </li>
+                        </ul>
+
+                    </aside>
+                </section>
+
+
+
+                <section>
+                    <h3>Tell</h3>
+                    <p>One way, Fire & Forget</p>
+                    <pre><code class="fsharp" data-trim>
+actor &lt;! message
+                </code></pre>
+
+                    <aside class="notes">
+                        <ul>
+                            <li>Send a message, no reply expected</li>
+                            <li>"Fire and Forget"</li>
+                            <li>No blocking waiting for reply</li>
+                            <li>Passing messages via ActorRefs</li>
+                            <li>Passing messages via ActorSelection</li>
+                        </ul>
+                    </aside>
+                </section>
+
+                <section>
+                    <h3>Ask</h3>
+                    <p>Request / Response</p>
+                    <pre><code class="fsharp" data-trim>
+async {
+    let! response = actor &lt;? message
+    // do something with response
+} |> Async.RunSynchronously
+                </code></pre>
+
+                    <aside class="notes">
+                        <ul>
+                            <li>Send a message, expects a reply back</li>
+                            <li>Does not block as it's an async method, but can timeout (basically a task)</li>
+                        </ul>
+
+                    </aside>
+                </section>
+
+                <section>
+                    <img src="images/yoda.jpg" style="width: 70%; height: 70%;" />
+                    <aside class="notes">
+                        <ul>
+                            <li>Tell method is preferred because it offers better scaling and concurrency</li>
+                            <li>Overhead to Ask involves the ActorSystem creating temporary actors to handle asynchonicity/li>
+                            <li>
+                                Ask should be preferred largely if the constraints of the system prevent the use of tell e.g.
+                                May be working with a web framework that does not allow Tell
+                            </li>
+
+                        </ul>
+                    </aside>
+                </section>
+
+                <section>
+                    <h3>Forward</h3>
+
+                    <pre><code class="fsharp" data-trim>
+actorToForwardTo.Forward message
+                </code></pre>
+
+                    <aside class="notes">
+                        <ul>
+                            <li>
+                                Forward is similar to Tell with the primary difference being that the original sender
+                                address and reference are preserved.
+                            </li>
+                            <li>
+                                Useful for when working with routers, load balancers, replicators and supervisors
+                            </li>
+                        </ul>
+                    </aside>
+                </section>
+
+                <section>
+                    <h3>PipeTo</h3>
+                    <pre><code class="fsharp" data-trim>
+async { 
+    // some async workflow 
+} |!&gt; myActor
+                    </code></pre>
+                    <p>
+                        <em>or</em>
+                    </p>
+
+                    <pre><code class="fsharp" data-trim>
+myActor &lt;!| async { 
+               // some async workflow 
+            }
+                    </code></pre>
+
+                    <aside class="notes">
+                        <ul>
+                            <li>
+                                When running an async workflow/task, can pipe the response to an actor
+                            </li>
+                            <li>
+                                Right now, there is a limitation in the F# API whereby the sender of the message piped with PipeTo is NoSender rather than the
+                                actor that encapsulated the async workflow. This is going to be addressed in future.
+                            </li>
+                        </ul>
+                    </aside>
+                </section>
+            </section>
+
+        <section>
+            <h2>What about that hierarchy of actors?</h2>
+        </section>
+
+            <section id="supervision">
+                <h2>Supervision</h2>
+
+                <section>
+                    <img src="images/lundberg.jpg" style="width: 75%; height: 75%" />
+
+                    <aside class="notes">
+                        <ul>
+                            <li>Examples</li>
+                            <li>Strategies</li>
+                        </ul>
+                    </aside>
+                </section>
+
+                <section>
+                    <pre><code class="fsharp" data-trim>
+type CustomException() = 
+    inherit Exception()
+
+type Message = 
+    | Echo of string 
+    | Crash
+
+let system = System.create "system" &lt;| Configuration.defaultConfig()
+</code></pre>
+                </section>
+
+                <section>
+                    <pre><code class="fsharp" data-trim>
+let child (childMailbox:Actor&lt;Message&gt;) = 
+    let rec childLoop() = actor {
+        let! msg = childMailbox.Receive()
+        match msg with
+        | Echo info -> 
+            let response = 
+                sprintf "Child %s received: %s" 
+                    (childMailbox.Self.Path.ToStringWithAddress()) info
+            childMailbox.Sender() &lt;! response
+        | Crash -> 
+            printfn "Child %A received crash order" 
+                (childMailbox.Self.Path)
+            raise (CustomException())
+        return! childLoop()
+    }
+    childLoop()</code></pre>
+                </section>
+
+                <section>
+                    <pre><code class="fsharp" data-trim>
+let parent (parentMailbox:Actor&lt;Message&gt;) =
+    // parent actor spawns child - is the supervisor of the child
+    let child = spawn parentMailbox "child" child
+
+    let rec parentLoop() = actor {
+        let! (msg: Message) = parentMailbox.Receive()
+        child.Forward msg  
+        return! parentLoop()
+    }
+    parentLoop()
+</code></pre>
+                </section>
+
+                <section>
+                    <pre><code class="fsharp" data-trim>
+// spawn with options to define a Supervisor Strategy
+let parentChild = 
+    spawnOpt system "parent" parent &lt;| 
+        [ SpawnOption.SupervisorStrategy (
+            Strategy.OneForOne(fun e ->
+                match e with
+                | :? CustomException -> Directive.Restart 
+                | _ -> SupervisorStrategy.DefaultDecider(e))); ]
+</code></pre>
+                </section>
+
+            <section>
+                    <img src="images/one-for-one.jpg" style="width: 65%; height:65%" />
+
+                    <aside class="notes">
+                        <p>...the one and only</p>
+                    </aside>
+                </section>
+
+                <section>
+                    <img src="images/all-for-one.jpg" style="width: 65%; height:65%" />
+
+                    <aside class="notes" data-ref="http://doc.akka.io/docs/akka/snapshot/general/supervision.html#One-For-One_Strategy_vs__All-For-One_Strategy">
+
+                        <p>...and one for all</p>
+
+                        The AllForOneStrategy is applicable in cases where the ensemble of children has such
+                        tight dependencies among them, that a failure of one child affects the function of the others,
+                        i.e. they are inextricably linked. Since a restart does not clear out the mailbox,
+                        it often is best to terminate the children upon failure and re-create them explicitly
+                        from the supervisor (by watching the children’s lifecycle); otherwise you have to make
+                        sure that it is no problem for any of the actors to receive a message which was queued
+                        before the restart but processed afterwards.
+                    </aside>
+                </section>
+
+                <section>
+                    <img src="images/directives.svg" />
+                    <aside class="notes">
+                        <ul>
+                            <li>Escalate (default supervisor directive) - thereby failing itself</li>
+                            <li>Resume - keeping its accumulated internal state</li>
+                            <li>Restart - clearing out its accumulated internal state</li>
+                            <li>Stop - permanently</li>
+                        </ul>
+                    </aside>
+                </section>
+            </section>
+
+            <section>
+                <h2>Lifecycle Monitoring</h2>
+
+                <section>
+                    <img src="images/death-watch.jpg" style="width: 70%; height: 70%;" data-ref="" />
+                    <p>a.k.a. Deathwatch</p>
+
+                    <aside class="notes">
+                        <ul>
+                            <li>Monitor the lifecycle of another actor</li>
+                            <li>Know when it is terminated</li>
+                        </ul>
+
+                    </aside>
+                </section>
+
+                <section>
+                    <pre><code class="fsharp" data-trim>
+monitor (targetActor:IActorRef, watcher:ICanWatch) 
+                    </code></pre>
+                    <p>and</p>
+                    <pre><code class="fsharp" data-trim>
+demonitor (targetActor:IActorRef, watcher:ICanWatch) 
+                    </code></pre>
+                </section>
+            </section>
+
+        <section>
+            <h2>Creating groups of <em>similar</em> actors?</h2>
+        </section>
+
+        <section>
+            <h2>Routers</h2>
+            <h3>Pools and Groups</h3>
+                <ul>
+                    <li>RoundRobin</li>
+                    <li>Broadcast</li>
+                    <li>Consistent Hashing</li>
+                    <li>TailChopping</li>
+                    <li>ScatterGatherFirstCompleted</li>
+                    <li>SmallestMailbox</li>
+                    <li>Random</li>
+                </ul>
+
+                <aside class="notes">
+
+                <ul>
+                    <li>Broadcast - send the same message to all routees</li>
+                    <li>Consistent Hashing - send messages with same "hash key" to same routee</li>
+                    <li>Tail Chopping - send message to one, wait a little, send to another, return first, discard rest</li>
+                </ul>
+            </aside>
+        </section>
+
+        <section>
+            <h2>Scaling out?</h2>
+        </section>
+
+            <section>
+                <h2>Akka Remote</h2>
+                <aside class="notes">
+                    <ul>
+                        <li>Needs to be enabled on both systems</li>
+                        <li>HOCON (Human-Optimized Config Object Notation)</li>
+                    </ul>
+                </aside>
+
+                <section>
+                    <h3>Shared assemblies</h3>
+                    <pre><code class="fsharp" data-trim>
+let config = Configuration.parse """
+akka {  
+    actor {
+    provider = 
+        "Akka.Remote.RemoteActorRefProvider, Akka.Remote"
+    deployment {
+        /my-actor {
+        remote = "akka.tcp://system2@localhost:8080"
+        }
+    }
+    }
+    remote {
+    helios.tcp {
+        transport-class = 
+        "Akka.Remote.Transport.Helios.HeliosTcpTransport, Akka.Remote"
+	    applied-adapters = []
+		transport-protocol = tcp
+		port = 8090
+		hostname = localhost
+    }
+    }
+}"""
+let system = System.create "system" &lt;| config
+let myActor = system.ActorOf&lt;SomeActor&gt;("my-actor")
+                </code></pre>
+
+                    <aside class="notes">
+                        <ul>
+                            <li>Build an ActorSystem across several processes</li>
+                        </ul>
+                    </aside>
+                </section>
+
+                <section>
+                    <h3>F# Quotations</h3>
+                    <pre><code class="fsharp" data-trim>
+let system = System.create "system" &lt;| Configuration.defaultConfig()
+let myActor = spawne system "my-actor"
+    &lt;| (&lt;@ fun mailbox ->                     
+            printfn "Actor pre start"
+            mailbox.Defer (fun () -> printfn "Actor post stop")
+            let rec loop () =
+                actor {
+                    let! msg = mailbox.Receive ()
+                    // msg handling here
+                    return! loop ()
+                }
+            loop () @&gt;) 
+            [SpawnOption.Deploy(
+                 Deploy(RemoteScope (Address.Parse "akka.tcp://system2@localhost:8080")))]
+                </code></pre>
+                    <aside class="notes">
+                        <ul>
+                            <li>Serialized using FsPickler and sent across the wire (<code>System.create</code> adds FsPickler support)</li>
+                            <li>No need to stop your remote nodes to reload shared actor assemblies when updated</li>
+                            <li>
+                                DISADVANTAGE: Code embedded inside quotation must use only functions, types
+                                and variables known to both endpoints. There are limited ways to define functions
+                                inside quotation expression (and no way to define types), but generally speaking
+                                in most cases it’s better to define them in separate library and share between nodes
+                            </li>
+                        </ul>
+
+                    </aside>
+                </section>
+            </section>
+
+        <section>
+            <h2>Changing Actor Behaviour?</h2>
+        </section>
+
+        <section>
+            <h2>FSM</h2>
+
+            <section>
+                <img src="images/fsm.jpg" style="width: 52%; height: 52%"/>
+            </section>
+
+            <section>
+                <h3>Finite State Machine</h3>
+                <pre><code class="fsharp" data-trim>
+let actor = spawn system "MyActor" &lt;| 
+                fun mailbox ->
+                    let rec loop1() = actor {
+                            let! message = mailbox.Receive()
+                            // do something with message
+                            return! loop2()
+                        }
+                    and loop2() = actor {
+                            let! message = mailbox.Receive()
+                            return! loop3()
+                        }
+                    and loop3() = actor {
+                            let! message = mailbox.Receive()
+                            return! loop1()
+                        }
+                    loop1()
+</code></pre>
+
+            </section>
+            <aside class="notes">
+                <ul>
+                    <li>Way to change the behaviour of actors at runtime</li>
+                    <li>In response to messages</li>
+                </ul>
+
+            </aside>
+        </section>
+
+            <section>
+                <h2>EXAMPLES</h2>
+            </section>
+
+        <section>
+                <h2>No time for...</h2>
+                <p>Dispatchers</p>
+                <p>Mailboxes</p>
+                <p>Event stream/bus</p>
+                <p>Scheduler</p>
+                <p>Clustering</p>
+                <p>Testing</p>
+                <p>Persistence/Snapshots</p>
+            </section>
+
+            <section>
+                <section>
+                    <h2>Books</h2>
+                    <img src="images/books.png" />
+                </section>
+
+                <section>
+                    <h2>Online Resources</h2>
+                    <ul>
+                        <li><a href="http://getakka.net/">akka.net documentation</a></li>
+                        <li><a href="http://akka.io/">akka documentation</a></li>
+                        <li><a href="https://gitter.im/akkadotnet/akka.net">gitter chat</a></li>
+                        <li><a href="http://bartoszsypytkowski.com/">bartosz sypytkowski's blog</a></li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Jump in!</h2>
+                    <ul>
+                        <li><a href="https://github.com/akkadotnet/akka.net/tree/dev/src/examples">Akka.NET github samples</a></li>
+                        <li><a href="https://github.com/rikace/AkkaActorModel">Riccardo Terrell's Actor model examples</a></li>
+                        <li><a href="https://petabridge.com/bootcamp/">Petabridge's Akka.NET bootcamp</a></li>
+                    </ul>
+                </section>
+            </section>
+
+            <section>
+                <h2>Thanks!</h2>
+            </section>
+
+            <section>
+                <h2>Addendum</h2>
+            </section>
+
+            <section>
+                <h2>What about TPL Dataflow?</h2>
+                <a href="https://msdn.microsoft.com/en-us/library/hh228603(v=vs.110).aspx"><small>MSDN documentation on TPL Dataflow</small></a>
+                <aside class="notes">
+                    <ul>
+                        <li>Not distributed - In process only</li>
+                        <li>Need to be directly referenced</li>
+                        <li>Cannot be remote deployed</li>
+                    </ul>
+                </aside>
+            </section>
+
+            <section>
+                <h2>What about MailboxProcessor&lt;`a&gt;?</h2>
+                <a href="http://fsharpforfunandprofit.com/posts/concurrency-actor-model/"><small>Messages and Actors - F# for fun and profit</small></a>
+                <pre><code class="fsharp">#nowarn "40"
+let printerAgent = MailboxProcessor.Start(fun inbox-> 
+        // the message processing function
+        let rec messageLoop = async {     
+                // read a message
+                let! msg = inbox.Receive()
+        
+                // process a message
+                printfn "message is: %s" msg
+                // loop to top
+                return! messageLoop  
+            }
+        // start the loop 
+        messageLoop 
+    )
+</code></pre>
+                <aside class="notes">
+                    <ul>
+                        <li>Need to directly reference mailboxes</li>
+                        <li>Built on top an unbounded queue</li>
+                        <li>Not distributed</li>
+                        <li>Cannot be remote deployed</li>
+                        <li>Strongly typed mailbox - Pro and Cons</li>
+                        <li>
+                            Some challenges in being consumed from C# e.g.
+                            <a href="http://stackoverflow.com/questions/4075189/agent-mailboxprocessor-in-c-sharp-using-new-async-await">Example 1</a>
+                            <a href="http://stackoverflow.com/questions/5581701/mailboxprocessort-from-c-sharp">Example 2</a>
+                        </li>
+                    </ul>
+                </aside>
+            </section>
+
+
+            <section>
+                <h2>What about Orleans?</h2>
+                <a href="http://research.microsoft.com/pubs/210931/Orleans-MSR-TR-2014-41.pdf"><small>Orleans: Distributed Virtual Actors for Programmability and Scalability</small></a>
+                <aside class="notes">
+                    <ul>
+                        <li>Higher level abstraction than Akka</li>
+                        <li>Lack of support of Become/Unbecome (FSM)</li>
+                        <li>Virtual Actors </li>
+                        <li>Grains do not have lifecycles and created automatically when needed.</li>
+                        <li>Focused on cons</li>
+                        <li>No control over actor placement and load balancing</li>
+                        <li><a href="https://github.com/akka/akka-meta/blob/master/ComparisonWithOrleans.md">Comparison with Orleans</a></li>
+                    </ul>
+                </aside>
+            </section>
+
+            <section>
+                <h2>Event Stream/Bus</h2>
+                <img src="images/events.png" />
+                <aside class="notes">
+                    <ul>
+                        <li>Provides a pub/sub model for events</li>
+                        <li>Useful for side effects to main control flow i.e. no tight coupling</li>
+                        <li>Originally conceived as a way to send messages to a group of Actors</li>
+                        <li>Does not preserve the original sender of the message</li>
+                        <li>EXAMPLE 11_EventStream</li>
+                    </ul>
+                </aside>
+            </section>
+
+            <section>
+                <h2>Scheduling</h2>
+                <img src="images/time.jpg" style="width: 60%; height: 60%" />
+                <aside class="notes">
+                    <ul>
+                        <li>Need to make things happen in the future</li>
+                        <li>Provided by the Actor System</li>
+                        <li>Exact timing inexact</li>
+                        <li>Cancellable via CancellationToken</li>
+                    </ul>
+                </aside>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+    <script>
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+            margin: 0.1,
+            minScale: 0.2,
+            maxScale: 1.0,
+
+            transition: 'slide',
+
+            dependencies: [
+                { src: 'lib/js/classList.js', condition: function () { return !document.body.classList; } },
+                { src: 'plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+                { src: 'plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); } },
+                { src: 'plugin/highlight/highlight.js', async: true, condition: function () { return !!document.querySelector('pre code'); }, callback: function () { hljs.initHighlightingOnLoad(); } },
+                { src: 'plugin/zoom-js/zoom.js', async: true },
+                { src: 'plugin/notes/notes.js', async: true }
+            ]
+        });
+    </script>
+
+</body>
+</html>
