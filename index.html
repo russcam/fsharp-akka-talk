@@ -76,7 +76,7 @@
     <div class="reveal">
 
         <div class='footer'>
-            <span>Akka.NET with F# - <a href="http://twitter.com/forloop">@forloop</a></span>
+            <span>Akka.NET with F# - <a href="http://twitter.com/forloop" target="_blank">@forloop</a></span>
         </div>
 
         <div class="slides">
@@ -86,7 +86,7 @@
                 <p>Getting <em>fun</em>ctional with Reactive systems</p>
                 <p>
                     <small>Russ Cam</small>
-                    <small><a href="http://twitter.com/forloop">@forloop</a></small>
+                    <small><a href="http://twitter.com/forloop" target="_blank">@forloop</a></small>
                 </p>
             </section>
 
@@ -112,8 +112,8 @@
                         <li>
                             Holla!
                             <ul>
-                                <li><a href="http://twitter.com/forloop">@forloop</a></li>
-                                <li><a href="http://forloop.co.uk/blog">forloop.co.uk/blog</a></li>
+                                <li><a href="http://twitter.com/forloop" target="_blank">@forloop</a></li>
+                                <li><a href="http://forloop.co.uk/blog" target="_blank">forloop.co.uk/blog</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -152,7 +152,7 @@
 
                 <section id="agent-based-programming">
                     <h2>Agent-based Programming</h2>
-                    <p>a.k.a. <a href="https://en.wikipedia.org/?title=Actor_model">The Actor model</a></p>
+                    <p>a.k.a. <a href="https://en.wikipedia.org/?title=Actor_model" target="_blank">The Actor model</a></p>
 
                     <blockquote cite="https://en.wikipedia.org/?title=Actor_model">
                         <p>
@@ -243,7 +243,7 @@
                     <h2>akka.net</h2>
                     <img src="images/AkkaNetLogoDesign.svg" />
                     <ul>
-                        <li>Port of the <a href="http://akka.io/">JVM Akka Toolkit</a> to the .NET Framework</li>
+                        <li>Port of the <a href="http://akka.io/" target="_blank">JVM Akka Toolkit</a> to the .NET Framework</li>
                         <li>Heavily influenced by the Actor model implementation in Erlang</li>
                     </ul>
 
@@ -258,7 +258,7 @@
 
                 <section id="whos-using-akka">
                     <h2>Who's using akka?</h2>
-                    <img src="images/whosusingAkka.png" />
+                    <img src="images/whosusingakka.png" />
 
                     <aside class="notes">
                         <ol>
@@ -276,12 +276,12 @@
 
             <section id="reactive-manifesto">
                     <h2>
-                        <a class="no-link" href="http://www.reactivemanifesto.org/">Reactive Manifesto</a>
+                        <a class="no-link" href="http://www.reactivemanifesto.org/" target="_blank">Reactive Manifesto</a>
                     </h2>
                     <img src="images/responsive-manifesto.svg" />
                     <p>
                         <small>
-                            <a href="https://www.typesafe.com/blog/why_do_we_need_a_reactive_manifesto%3F">Why do we need a Reactive Manifesto?</a>
+                            <a href="https://www.typesafe.com/blog/why_do_we_need_a_reactive_manifesto%3F" target="_blank">Why do we need a Reactive Manifesto?</a>
                         </small>
                     </p>
 
@@ -979,19 +979,19 @@ let actor = spawn system "MyActor" &lt;|
                 <section>
                     <h2>Online Resources</h2>
                     <ul>
-                        <li><a href="http://getakka.net/">akka.net documentation</a></li>
-                        <li><a href="http://akka.io/">akka documentation</a></li>
-                        <li><a href="https://gitter.im/akkadotnet/akka.net">gitter chat</a></li>
-                        <li><a href="http://bartoszsypytkowski.com/">bartosz sypytkowski's blog</a></li>
+                        <li><a href="http://getakka.net/" target="_blank">akka.net documentation</a></li>
+                        <li><a href="http://akka.io/" target="_blank">akka documentation</a></li>
+                        <li><a href="https://gitter.im/akkadotnet/akka.net" target="_blank">gitter chat</a></li>
+                        <li><a href="http://bartoszsypytkowski.com/" target="_blank">bartosz sypytkowski's blog</a></li>
                     </ul>
                 </section>
 
                 <section>
                     <h2>Jump in!</h2>
                     <ul>
-                        <li><a href="https://github.com/akkadotnet/akka.net/tree/dev/src/examples">Akka.NET github samples</a></li>
-                        <li><a href="https://github.com/rikace/AkkaActorModel">Riccardo Terrell's Actor model examples</a></li>
-                        <li><a href="https://petabridge.com/bootcamp/">Petabridge's Akka.NET bootcamp</a></li>
+                        <li><a href="https://github.com/akkadotnet/akka.net/tree/dev/src/examples" target="_blank">Akka.NET github samples</a></li>
+                        <li><a href="https://github.com/rikace/AkkaActorModel" target="_blank">Riccardo Terrell's Actor model examples</a></li>
+                        <li><a href="https://petabridge.com/bootcamp/" target="_blank">Petabridge's Akka.NET bootcamp</a></li>
                     </ul>
                 </section>
             </section>
@@ -1006,7 +1006,7 @@ let actor = spawn system "MyActor" &lt;|
 
             <section>
                 <h2>What about TPL Dataflow?</h2>
-                <a href="https://msdn.microsoft.com/en-us/library/hh228603(v=vs.110).aspx"><small>MSDN documentation on TPL Dataflow</small></a>
+                <a href="https://msdn.microsoft.com/en-us/library/hh228603(v=vs.110).aspx" target="_blank"><small>MSDN documentation on TPL Dataflow</small></a>
                 <aside class="notes">
                     <ul>
                         <li>Not distributed - In process only</li>
@@ -1018,7 +1018,7 @@ let actor = spawn system "MyActor" &lt;|
 
             <section>
                 <h2>What about MailboxProcessor&lt;`a&gt;?</h2>
-                <a href="http://fsharpforfunandprofit.com/posts/concurrency-actor-model/"><small>Messages and Actors - F# for fun and profit</small></a>
+                <a href="http://fsharpforfunandprofit.com/posts/concurrency-actor-model/" target="_blank"><small>Messages and Actors - F# for fun and profit</small></a>
                 <pre><code class="fsharp">#nowarn "40"
 let printerAgent = MailboxProcessor.Start(fun inbox-> 
         // the message processing function
@@ -1044,8 +1044,8 @@ let printerAgent = MailboxProcessor.Start(fun inbox->
                         <li>Strongly typed mailbox - Pro and Cons</li>
                         <li>
                             Some challenges in being consumed from C# e.g.
-                            <a href="http://stackoverflow.com/questions/4075189/agent-mailboxprocessor-in-c-sharp-using-new-async-await">Example 1</a>
-                            <a href="http://stackoverflow.com/questions/5581701/mailboxprocessort-from-c-sharp">Example 2</a>
+                            <a href="http://stackoverflow.com/questions/4075189/agent-mailboxprocessor-in-c-sharp-using-new-async-await" target="_blank">Example 1</a>
+                            <a href="http://stackoverflow.com/questions/5581701/mailboxprocessort-from-c-sharp" target="_blank">Example 2</a>
                         </li>
                     </ul>
                 </aside>
@@ -1054,7 +1054,7 @@ let printerAgent = MailboxProcessor.Start(fun inbox->
 
             <section>
                 <h2>What about Orleans?</h2>
-                <a href="http://research.microsoft.com/pubs/210931/Orleans-MSR-TR-2014-41.pdf"><small>Orleans: Distributed Virtual Actors for Programmability and Scalability</small></a>
+                <a href="http://research.microsoft.com/pubs/210931/Orleans-MSR-TR-2014-41.pdf" target="_blank"><small>Orleans: Distributed Virtual Actors for Programmability and Scalability</small></a>
                 <aside class="notes">
                     <ul>
                         <li>Higher level abstraction than Akka</li>
@@ -1063,7 +1063,7 @@ let printerAgent = MailboxProcessor.Start(fun inbox->
                         <li>Grains do not have lifecycles and created automatically when needed.</li>
                         <li>Focused on cons</li>
                         <li>No control over actor placement and load balancing</li>
-                        <li><a href="https://github.com/akka/akka-meta/blob/master/ComparisonWithOrleans.md">Comparison with Orleans</a></li>
+                        <li><a href="https://github.com/akka/akka-meta/blob/master/ComparisonWithOrleans.md" target="_blank">Comparison with Orleans</a></li>
                     </ul>
                 </aside>
             </section>
